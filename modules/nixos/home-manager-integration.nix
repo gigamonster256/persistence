@@ -24,7 +24,6 @@
         lib.optionalAttrs (options ? home-manager) (
           lib.mkIf config.persistence.homeManagerIntegration.enable {
             home-manager.sharedModules = [
-              inputs.impermanence.homeManagerModules.impermanence
               self.homeManagerModules.persistence
               # set defaults for impermanence paths (between mkOption and mkDefault)
               {

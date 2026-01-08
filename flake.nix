@@ -2,7 +2,7 @@
   inputs = {
     # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    impermanence.url = "github:nix-community/impermanence/home-manager-v2";
+    impermanence.url = "github:nix-community/impermanence";
     # impermanence.inputs.nixpkgs.follows = "nixpkgs";
     import-tree.url = "github:vic/import-tree";
   };

@@ -145,23 +145,31 @@ let
           (lib.setAttrByPath optionPath (
             lib.mkOption {
               type = lib.types.attrsOf (
-                lib.types.submodule (_name: {
-                  options = {
-                    namespace = lib.mkOption {
-                      default = "programs";
-                      type = lib.types.coercedTo lib.types.str lib.singleton (lib.types.listOf lib.types.str);
-                      description = "Namespace of the program to set impermanence options for.";
+                lib.types.submodule (
+                  { name, ... }:
+                  {
+                    options = {
+                      name = lib.mkOption {
+                        default = name;
+                        type = lib.types.str;
+                        description = "Name of the nixos option to create persistence options for.";
+                      };
+                      namespace = lib.mkOption {
+                        default = "programs";
+                        type = lib.types.coercedTo lib.types.str lib.singleton (lib.types.listOf lib.types.str);
+                        description = "Namespace of the program to set impermanence options for.";
+                      };
+                      files = lib.mkOption {
+                        type = lib.types.listOf lib.types.str;
+                        default = [ ];
+                      };
+                      directories = lib.mkOption {
+                        type = lib.types.listOf lib.types.str;
+                        default = [ ];
+                      };
                     };
-                    files = lib.mkOption {
-                      type = lib.types.listOf lib.types.str;
-                      default = [ ];
-                    };
-                    directories = lib.mkOption {
-                      type = lib.types.listOf lib.types.str;
-                      default = [ ];
-                    };
-                  };
-                })
+                  }
+                )
               );
               default = { };
               inherit description;
@@ -178,10 +186,15 @@ let
 
       config = lib.setAttrByPath modulePath {
         imports = lib.mapAttrsToList (
-          name: cfg:
+          _name: cfg:
           mkPersistenceModule {
-            inherit name configFn;
-            inherit (cfg) namespace directories files;
+            inherit configFn;
+            inherit (cfg)
+              name
+              namespace
+              directories
+              files
+              ;
           }
         ) (lib.attrByPath optionPath { } config);
       };

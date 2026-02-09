@@ -1,3 +1,4 @@
+{ lib, ... }:
 let
   mkPackageModule =
     {
@@ -22,7 +23,7 @@ let
         package = lib.mkPackageOption pkgs packageName { };
       };
 
-      config = lib.mkIf cfg.enable (configFn cfg);
+      config = configFn cfg;
     };
 
   mkPackageFlakeModule =
@@ -126,7 +127,7 @@ let
         (lib.setAttrByPath persistencePath {
           inherit directories files;
         })
-        (lib.mkIf persistenceCfg.enable (configFn persistenceCfg))
+        (configFn persistenceCfg)
       ];
     };
 
@@ -201,29 +202,29 @@ let
     };
 
   defaultNixosPersistenceConfigFn = cfg: {
-    persistence = {
+    persistence = lib.mkIf cfg.enable {
       inherit (cfg) directories files;
     };
   };
   defaultHomeManagerPersistenceConfigFn = cfg: {
-    persistence = {
+    persistence = lib.mkIf cfg.enable {
       inherit (cfg) directories files;
     };
   };
   defaultNixosHomePersistenceConfigFn = cfg: {
     home-manager.sharedModules = [
       {
-        persistence = {
+        persistence = lib.mkIf cfg.enable {
           inherit (cfg) directories files;
         };
       }
     ];
   };
   defaultNixosPackageConfigFn = cfg: {
-    environment.systemPackages = [ cfg.package ];
+    environment.systemPackages = lib.mkIf cfg.enable [ cfg.package ];
   };
   defaultHomeManagerPackageConfigFn = cfg: {
-    home.packages = [ cfg.package ];
+    home.packages = lib.mkIf cfg.enable [ cfg.package ];
   };
 in
 {

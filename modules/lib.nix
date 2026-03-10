@@ -161,11 +161,11 @@ let
                         description = "Namespace of the program to set impermanence options for.";
                       };
                       files = lib.mkOption {
-                        type = lib.types.listOf lib.types.str;
+                        type = lib.types.listOf lib.types.anything; # let the impermanence module do the type checking
                         default = [ ];
                       };
                       directories = lib.mkOption {
-                        type = lib.types.listOf lib.types.str;
+                        type = lib.types.listOf lib.types.anything; # let the impermanence module do the type checking
                         default = [ ];
                       };
                     };
